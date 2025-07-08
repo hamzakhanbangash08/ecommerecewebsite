@@ -2,6 +2,10 @@
 
 namespace App\Providers;
 
+use App\Models\Cart;
+use App\Models\Category;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -17,8 +21,18 @@ class AppServiceProvider extends ServiceProvider
     /**
      * Bootstrap any application services.
      */
+
+
+
     public function boot(): void
     {
-        //
+        //pass data into sidebar for all views
+        View::composer('*', function ($view) {
+            $view->with('sidebarCategories', Category::all());
+        });
+
+
+        // Inject cart count into all views
+
     }
 }

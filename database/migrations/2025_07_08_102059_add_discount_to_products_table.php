@@ -11,11 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('categories', function (Blueprint $table) {
-            $table->id();
-            $table->string('name')->unique();
-            $table->unsignedBigInteger('category_id')->nullable();
-            $table->timestamps();
+        Schema::table('products', function (Blueprint $table) {
+            //
+            $table->decimal('discount', 5, 2)->default(0); // e.g., 10.00 means 10%
         });
     }
 
@@ -24,6 +22,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('categories');
+        Schema::table('products', function (Blueprint $table) {
+            //
+        });
     }
 };

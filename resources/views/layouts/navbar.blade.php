@@ -13,10 +13,23 @@
             </ul>
             <!-- Left Side Of Navbar -->
             <ul class="navbar-nav me-auto">
+
+
             </ul>
 
             <!-- Right Side Of Navbar -->
             <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a href="{{ route('cart.index') }}" class="nav-link position-relative">
+                        🛒
+                        @if($cartCount > 0)
+                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                            {{ $cartCount }}
+                        </span>
+                        @endif
+                    </a>
+                </li>
+
                 @guest
                 @if (Route::has('login'))
                 <li class="nav-item">

@@ -57,6 +57,13 @@
                     <small class="text-danger" id="error_category"></small>
                 </div>
 
+                <div class="mb-3">
+                    <label for="discount" class="form-label">Discount (%)</label>
+                    <input type="number" name="discount" id="discount" step="0.01" min="0" max="100"
+                        class="form-control" value="{{ old('discount') }}">
+                </div>
+
+
                 <!-- Submit -->
                 <button type="submit" class="btn btn-success">Save Product</button>
             </form>
@@ -88,7 +95,7 @@
                         icon: 'success',
                         title: 'Success',
                         text: response.message,
-                        timer: 2500,
+                        timer: 4000,
                         showConfirmButton: false
                     }); // ya sweetalert if used
 

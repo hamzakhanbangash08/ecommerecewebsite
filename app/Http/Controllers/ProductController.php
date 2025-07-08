@@ -2,113 +2,77 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Category;
 use App\Models\Product;
-use Illuminate\Auth\Events\Validated;
-use Illuminate\Database\Eloquent\Model;
+use App\Models\Category;
 use Illuminate\Http\Request;
+use App\Helpers\CustomHelper;
+
 
 class ProductController extends Controller
 {
+    private $_request;
+    private $_modal;
 
-    private $_request = null;
-    private $_modal = null;
-    private $_view = null;
-
-    public function __construct(Request $request, Product $modal,  $var = null)
+    public function __construct(Request $request, Product $modal)
     {
-
         $this->_request = $request;
         $this->_modal = $modal;
-        $this->_view = $var;
-    }
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
-        //
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
+
+    function index()
+    {
+        $categories = Category::all();
+        return view('product.index', compact('categories'));
+    }
+
+
+
+    public function productsByCategory($id)
+    {
+        $category = Category::findOrFail($id);
+        $products = Product::where('category', $id)->latest()->get(); // ya category_id
+
+        return view('product.category', compact('category', 'products'));
+    }
+
+
     public function create()
     {
-        //
-
         $categories = Category::all();
         return view('product.create', compact('categories'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store()
     {
-        //
+        try {
+            $validatedData = $this->_request->validate([
+                'name' => 'required|string|max:255',
+                'description' => 'nullable|string',
+                'price' => 'required|numeric|min:0',
+                'category' => 'required|exists:categories,id',
+                'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:8000',
+                'discount' => 'nullable|numeric|min:0|max:100', // Assuming discount is a percentage
 
-        $validatedData = $this->_request->validate([
-            'name' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'price' => 'required|numeric|min:0',
-            'category' => 'required|exists:categories,id',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:8000',
-        ]);
+            ]);
 
-        // Handle file upload if an image is provided
-        // Image store directly in public/images
-        if ($this->_request->hasFile('image')) {
-            $file = $this->_request->file('image');
-            $filename = time() . '_' . $file->getClientOriginalName(); // unique name
-            $path = public_path('images'); // absolute path: /project-root/public/images
-            $file->move($path, $filename);
+            // Upload image if provided
+            $imagePath = CustomHelper::uploadImage($this->_request);
+            if ($imagePath) {
+                $validatedData['image'] = $imagePath;
+            }
 
-            // Save relative path in DB
-            $validatedData['image'] = 'images/' . $filename;
+            $product = CustomHelper::add(Product::class, $validatedData);
+
+            return response()->json(['message' => 'Product created successfully.', 'product' => $product]);
+        } catch (\Throwable $e) {
+            return response()->json([
+                'error' => 'Something went wrong',
+                'message' => $e->getMessage(),
+            ], 500);
         }
-
-        // Create the product
-        $product = $this->model::create($validatedData);
-
-        // Redirect to the product index or show page with a success message
-        // return redirect()->route('product.index')->with('success', 'Product created successfully.');
-
-        // Alternatively, you can return a view or JSON response
-        // return view('product.index', compact('product'));
-
-        return response()->json(['message' => 'Product created successfully.', 'product' => $product]);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
-    }
+    function show($id) {}
 }
