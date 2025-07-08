@@ -25,4 +25,9 @@ class Category extends Model
     // protected $hidden = [];
 
 
+
+function product()
+    {
+        return $this->hasMany(Product::class, 'category', 'id');
+    }
 }

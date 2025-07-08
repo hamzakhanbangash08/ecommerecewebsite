@@ -12,12 +12,12 @@ class CustomHelper
      */
 
 
-     function createRecord($model, $data)
-     {
+    public static function add($model, $data)
+    {
         $record = new $model($data);
         $record->save();
         return $record;
-     }
+    }
     public static function uploadImage(Request $request, $fieldName = 'image', $folder = 'images')
     {
         if ($request->hasFile($fieldName)) {
@@ -37,5 +37,15 @@ class CustomHelper
     public static function generateSlug($string)
     {
         return strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $string)));
+    }
+
+
+    public static function get_id($model, $id)
+    {
+        $record = $model::find($id);
+        if (!$record) {
+            abort(404, 'Record not found');
+        }
+        return $record;
     }
 }
