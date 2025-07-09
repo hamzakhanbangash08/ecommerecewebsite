@@ -32,7 +32,16 @@ class AppServiceProvider extends ServiceProvider
         });
 
 
-        // Inject cart count into all views
+        View::composer('*', function ($view) {
+            if (Auth::check()) {
+                $cartCount = Cart::where('user_id', Auth::id())
+                    ->where('seen', false) // ✅ only unseen items
+                    ->sum('quantity');
+            } else {
+                $cartCount = 0;
+            }
 
+            $view->with('cartCount', $cartCount);
+        });
     }
 }

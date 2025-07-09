@@ -1,4 +1,3 @@
-
 <!doctype html>
 <html lang="en">
 <!--begin::Head-->
@@ -7,6 +6,7 @@
 
 <body class="layout-fixed sidebar-expand-lg bg-body-tertiary">
   <div class="app-wrapper">
+
     <!--begin::Header-->
     @include('layouts.navbar')
     <!--end::Header-->
@@ -17,6 +17,8 @@
 
     <!--begin::App Main-->
     <main class="app-main ">
+
+
       <!--begin::App Content Header-->
       <div class="app-content-header">
         <div class="container-fluid">
@@ -29,7 +31,9 @@
 
       <!--begin::App Content-->
       <div class="app-content">
- @yield('content')
+
+
+        @yield('content')
         <script>
           const notyf = new Notyf({
             duration: 3000,
@@ -49,7 +53,7 @@
           @endif
         </script>
 
-       
+
       </div>
       <!--end::App Content-->
 
@@ -239,14 +243,8 @@
   <!-- Custom JS -->
   <script src="{{ asset('asset/script/custom.js') }}"></script>
 
-  @section('scripts')
-  @show
+  @yield('scripts')
   <!--end::Scripts-->
 </body>
 
 </html>
-
-
-
-
-
