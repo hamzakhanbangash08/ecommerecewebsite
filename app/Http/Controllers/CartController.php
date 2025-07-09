@@ -21,14 +21,25 @@ class CartController extends Controller
     }
 
 
+    // public function index()
+    // {
+    //     $cart = Cart::with('product') // eager load product if needed
+    //         ->where('user_id', $userId = auth()->id())
+    //         ->get();
+
+    //     // Mark all as seen
+    //     Cart::where('user_id', $userId)->update(['seen' => true]);
+    //     return view('cart.index', compact('cart'));
+    // }
+
+
     public function index()
     {
-        $cart = Cart::with('product') // eager load product if needed
-            ->where('user_id', $userId = auth()->id())
-            ->get();
+        // Mark all unseen cart items as seen
+        Cart::where('user_id', auth()->id())->where('seen', false)->update(['seen' => true]);
 
-        // Mark all as seen
-        Cart::where('user_id', $userId)->update(['seen' => true]);
+        $cart = Cart::with('product')->where('user_id', auth()->id())->get();
+
         return view('cart.index', compact('cart'));
     }
 
@@ -65,5 +76,20 @@ class CartController extends Controller
         }
 
         return redirect()->back()->with('success', 'Product added to cart!');
+    }
+
+
+    public function update(Request $request, $id)
+    {
+        $request->validate([
+            'quantity' => 'required|integer|min:1',
+        ]);
+
+        $cart = Cart::where('id', $id)->where('user_id', auth()->id())->firstOrFail();
+        $cart->quantity = $request->quantity;
+        $cart->seen = false;
+        $cart->save();
+
+        return redirect()->route('cart.index');
     }
 }

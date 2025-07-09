@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Product;
 use App\Models\Category;
+use App\Models\Wishlist;
 use Illuminate\Http\Request;
 use App\Helpers\CustomHelper;
 
@@ -33,7 +34,11 @@ class ProductController extends Controller
         $category = Category::findOrFail($id);
         $products = Product::where('category', $id)->latest()->get(); // ya category_id
 
-        return view('product.category', compact('category', 'products'));
+        $wishlistProductIds = auth()->check()
+            ? Wishlist::where('user_id', auth()->id())->pluck('product_id')->toArray()
+            : [];
+
+        return view('product.category', compact('category', 'products', 'wishlistProductIds'));
     }
 
 
