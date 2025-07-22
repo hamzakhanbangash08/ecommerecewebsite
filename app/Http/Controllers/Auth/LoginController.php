@@ -11,7 +11,23 @@ class LoginController extends Controller
 {
     use AuthenticatesUsers;
 
-    protected $redirectTo = '/home';
+
+
+
+    protected function redirectTo()
+    {
+        $user = auth()->user();
+
+        if ($user->role === 'admin') {
+            return route('adminpage');
+        }
+
+        if ($user->role === 'customer') {
+            return route('home');
+        }
+
+        return route('adminpage');
+    }
 
     public function __construct()
     {

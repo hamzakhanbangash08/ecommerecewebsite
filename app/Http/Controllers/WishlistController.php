@@ -74,9 +74,14 @@ class WishlistController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Wishlist $wishlist)
+    public function destroy($id)
     {
         //
+        $wishlist = $this->_modal::where('id', $id)->where('user_id', auth()->id())->first();
+        if ($wishlist) {
+            $wishlist->delete();
+            return back()->with('success', 'Wishlist item deleted.');
+        }
     }
 
 
@@ -88,7 +93,7 @@ class WishlistController extends Controller
 
         if ($existing) {
             $existing->delete();
-            return back()->with('message', 'Removed from wishlist.');
+            return back()->with('success', 'Removed from wishlist.');
         }
 
         Wishlist::create([
@@ -96,6 +101,6 @@ class WishlistController extends Controller
             'product_id' => $product->id,
         ]);
 
-        return back()->with('message', 'Added to wishlist!');
+        return back()->with('success', 'Added to wishlist!');
     }
 }

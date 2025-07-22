@@ -8,7 +8,7 @@ class Category extends Model
 {
     //
 
-   protected $guarded = [];
+    protected $guarded = [];
 
     /**
      * The attributes that are mass assignable.
@@ -26,7 +26,7 @@ class Category extends Model
 
 
 
-function product()
+    function product()
     {
         return $this->hasMany(Product::class, 'category', 'id');
     }

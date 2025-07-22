@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
 class RegisterController extends Controller
@@ -28,7 +29,7 @@ class RegisterController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = '/home';
+
 
     /**
      * Create a new controller instance.
@@ -52,6 +53,14 @@ class RegisterController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
+
+            // new fields
+            'age' => ['nullable', 'string'],
+            'city' => ['nullable', 'string'],
+            'contact_number' => ['nullable', 'string', 'max:15'],
+            'role' => ['required', 'string'], // or limit to ['admin', 'customer']
+            'address' => ['nullable', 'string'],
+            'image' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif,svg,webp', 'max:8000'],
         ]);
     }
 
@@ -63,10 +72,31 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
+
+        $imageName = null;
+        if (request()->hasFile('image')) {
+            $image = request()->file('image');
+            $imageName = time() . '.' . $image->getClientOriginalExtension();
+            $image->move(public_path('images'), $imageName);
+        }
+
         return User::create([
             'name' => $data['name'],
             'email' => $data['email'],
+
+            // new fields
+            'age' => $data['age'],
+            'city' => $data['city'],
+            'contact_number' => $data['contact_number'] ?? null,
+            'role' => $data['role'],
+            'image' => $imageName, // Save file name in DB
+            'address' => $data['address'] ?? null,
             'password' => Hash::make($data['password']),
         ]);
+    }
+    protected function registered(Request $request, $user)
+    {
+        auth()->logout(); // Logout the user after register
+        return redirect()->route('login')->with('success', 'Registration successful! Please login.');
     }
 }

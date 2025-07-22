@@ -88,11 +88,11 @@
                             View Details
                         </a>
 
-                        <form action="{{ route('cart.add', $product->id) }}" method="POST">
+                        <!-- <form action="{{ route('cart.add', $product->id) }}" method="POST">
                             @csrf
                             <input type="hidden" name="quantity" value="1">
                             <button type="submit" class="btn btn-sm btn-primary rounded-pill">Add to Cart</button>
-                        </form>
+                        </form> -->
                     </div>
                 </div>
             </div>

@@ -72,10 +72,9 @@
 
     <!--begin::Footer-->
     <footer class="app-footer">
-      <div class="float-end d-none d-sm-inline">Anything you want</div>
+      <div class="float-end d-none d-sm-inline">Ecommerce Website for Everything</div>
       <strong>
-        Copyright &copy; 2014-2024
-        <a href="https://adminlte.io" class="text-decoration-none">AdminLTE.io</a>.
+        Copyright &copy; 2025
       </strong>
       All rights reserved.
     </footer>
