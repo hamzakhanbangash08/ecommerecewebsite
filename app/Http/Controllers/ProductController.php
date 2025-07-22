@@ -67,7 +67,7 @@ class ProductController extends Controller
                 $validatedData['image'] = $imagePath;
             }
 
-            $product = CustomHelper::add(Product::class, $validatedData);
+            $product = CustomHelper::add($this->_modal, $validatedData);
 
             return response()->json(['message' => 'Product created successfully.', 'product' => $product]);
         } catch (\Throwable $e) {
@@ -79,5 +79,31 @@ class ProductController extends Controller
     }
 
 
-    function show($id) {}
+    function show($id)
+    {
+
+        $product = CustomHelper::get_id($this->_modal, $id);
+        $wishlistProductIds = auth()->check()
+            ? Wishlist::where('user_id', auth()->id())->pluck('product_id')->toArray()
+            : [];
+
+
+        // 
+        $product = $this->_modal::with('ratings')->findOrFail($id);
+
+        // Breakdown logic
+        $totalRatings = $product->ratings->count();
+        $breakdown = [];
+
+        for ($i = 5; $i >= 1; $i--) {
+            $count = $product->ratings->where('rating', $i)->count();
+            $percentage = $totalRatings > 0 ? round(($count / $totalRatings) * 100) : 0;
+
+            $breakdown[$i] = [
+                'count' => $count,
+                'percentage' => $percentage
+            ];
+        }
+        return view('product.show', compact('product', 'wishlistProductIds', 'product', 'breakdown', 'totalRatings'));
+    }
 }

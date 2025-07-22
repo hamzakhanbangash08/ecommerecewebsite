@@ -23,10 +23,17 @@ class User extends Authenticatable
      *
      * @var list<string>
      */
+
     protected $fillable = [
         'name',
         'email',
         'password',
+        'age',
+        'contact_number',
+        'city',
+        'role',
+        'address',
+        'image',
     ];
 
     /**
@@ -55,5 +62,17 @@ class User extends Authenticatable
     function carts()
     {
         return $this->hasMany(Cart::class);
+    }
+    function wishlist()
+    {
+        return $this->hasMany(Wishlist::class);
+    }
+    function ratings()
+    {
+        return $this->hasMany(Rating::class);
+    }
+    public function reviewVotes()
+    {
+        return $this->hasMany(Review::class);
     }
 }

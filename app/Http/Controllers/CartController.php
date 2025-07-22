@@ -44,6 +44,8 @@ class CartController extends Controller
     }
 
 
+
+    // add to cart 
     public function addToCart(Request $request, $productId)
     {
         $product = Product::findOrFail($productId);
@@ -79,6 +81,8 @@ class CartController extends Controller
     }
 
 
+
+    // ye function wishlist banatha hai
     public function update(Request $request, $id)
     {
         $request->validate([
@@ -90,6 +94,15 @@ class CartController extends Controller
         $cart->seen = false;
         $cart->save();
 
-        return redirect()->route('cart.index');
+        return response()->json(['success' => true]);
+    }
+
+
+    function destroy($id)
+    {
+        $cartItem = Cart::where('id', $id)->where('user_id', auth()->id())->firstOrFail();
+        $cartItem->delete();
+
+        return redirect()->route('cart.index')->with('success', 'Item removed from cart.');
     }
 }

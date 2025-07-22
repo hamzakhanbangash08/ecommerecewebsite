@@ -57,13 +57,36 @@
                 @endif
                 @else
                 <li class="nav-item dropdown">
-                    <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button"
-                        data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
-                        {{ Auth::user()->name }}
+                    <a id="navbarDropdown"
+                        class="nav-link d-flex align-items-center"
+                        href="#"
+                        role="button"
+                        data-bs-toggle="dropdown"
+                        aria-haspopup="true"
+                        aria-expanded="false"
+                        v-pre
+                        style="gap: 10px; min-width: 180px;">
+
+                        {{-- Profile Image --}}
+                        <img src="{{ asset('images/' . (Auth::user()->image ?? 'default.png')) }}"
+                            alt="Profile"
+                            class="rounded-circle shadow-sm border border-light"
+                            width="40" height="40"
+                            style="object-fit: cover;">
+
+                        {{-- User Name + Role --}}
+                        <div class="d-flex flex-column align-items-start">
+                            <strong>{{ Auth::user()->name }}</strong>
+                            <small class="text-muted">{{ Auth::user()->role ?? 'User' }}</small>
+                        </div>
                     </a>
 
+                    {{-- Dropdown Menu --}}
                     <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                        {{-- Logout link triggers form --}}
+                        <a class="dropdown-item" href="{{ route('profile.edit') }}">
+                            Profile
+                        </a>
+                        <div class="dropdown-divider"></div>
                         <a class="dropdown-item" href="#"
                             onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                             Logout
@@ -74,6 +97,8 @@
                         </form>
                     </div>
                 </li>
+
+
                 @endguest
             </ul>
         </div>

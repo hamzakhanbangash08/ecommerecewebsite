@@ -22,4 +22,16 @@ class Product extends Model
     {
         return $this->hasMany(Cart::class);
     }
+    function wishlist()
+    {
+        return $this->hasMany(Wishlist::class);
+    }
+    function ratings()
+    {
+        return $this->hasMany(Rating::class);
+    }
+    public function averageRating()
+    {
+        return $this->ratings()->avg('rating');
+    }
 }

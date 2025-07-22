@@ -70,15 +70,22 @@
                     <h6 class="text-primary fw-bold mb-3">Rs. {{ number_format($product->product->price, 2) }}</h6>
 
                     {{-- Buttons --}}
-                    <div class="d-grid gap-2 mt-auto">
+                    <div class="d-flex gap-2 mt-auto">
                         <a href="{{ route('products.show', $product->id) }}"
                             class="btn btn-sm btn-outline-secondary rounded-pill">View Details</a>
 
                         <form action="{{ route('cart.add', $product->id) }}" method="POST">
                             @csrf
                             <input type="hidden" name="quantity" value="1">
-                            <button type="submit" class="btn btn-sm btn-primary rounded-pill">Add to Cart</button>
+                            <button type="submit" class="btn btn-sm btn-outline-primary rounded-pill">Add to Cart</button>
                         </form>
+
+                        <form action="{{ route('wishlists.destroy', $product->id) }}" method="POST">
+                            @csrf
+                            @method('DELETE')
+                            <button class="btn btn-sm btn-outline-danger">Remove Wishlist</button>
+                        </form>
+
                     </div>
                 </div>
             </div>
